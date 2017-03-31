@@ -1,27 +1,54 @@
-MLML <- function(z, a, b=1, g=1) {
-  #maximum likelihood
+mlml <- function(X) {
+  log_l <- function(theta) {
+    #transform parameters so can do optimization unconstrained
+    theta[1] <- 1/(1+exp(-theta[1]))
+    theta[2] <- exp(theta[2])
+    -sum(log(dml(X,theta[1],theta[2])))
+  }
+  ## Plot likelihood
+  #log_l_plotdata <- matrix(0,nrow=100,ncol=100)
+  #for (i in 1:100) {
+  #  for (j in 1:100) {
+  #    log_l_plotdata[i,j] <- sum(log(dml(X,0.01*i,1*j)))
+  #  }
+  #}
+  #M <- mesh(seq(0.01,1,0.01), 1:100)
+  #surf3D(M$x, M$y, log_l_plotdata, bty="b2")
+  #plot(seq(0.01,1,0.01), log_l_plotdata)
+  ml_theta <- optim(c(0.5,0.5), fn=log_l)$par
+  ml_a <- 1/(1 + exp(-ml_theta[1]))
+  ml_d <- exp(ml_theta[2])
+  print(paste("alpha =", ml_a, "delta =", ml_d))
 }
 
-rml <- function(n,a,b=1,g=1){
+rml <- function(n,a,d=1){
   x <- numeric(n)  
   u <- runif(n)
   for (i in 1:n) {
-    pml_u <- function(z) {pml(z,a,b,g) - u[i]}
-    temp <- uniroot(pml_u, interval = c(0,100), extendInt="upX")
-    x[i] <- temp$root
+    pml_u <- function(z) {pml(z,a) - u[i]}
+    x[i] <- uniroot(pml_u, interval = c(10^-14,100), extendInt="upX")$root
   }
   return(x)
 }
 
-dml <- function(z,a,b=1,g=1) {
-  ml <- z^(a-1)*mlf(-z^a, a, a, g) 
+dml <- function(z,a,d=1) {
+  ml <- (z^(a-1)/(d^a))*mlf(-(z/d)^a, a, a, 1) 
   return(ml)
 }
 
-pml <- function(z,a,b=1,g=1) {
-  ml <- 1 - mlf(-z^a,a,b,g)
+pml <- function(z,a) {
+  ml <- 1 - mlf(-z^a,a,1,1)
   return(ml)
 }
+
+#mlf <- function(z, a, b=1) {
+#  E <- numeric(length(z))
+#  k <- 0:100
+#  for (i in 1:length(z)){
+#    E[i] <- sum(z[i]^k/gamma(a*k + b))
+#  }
+#  return(E)
+#}
 
 
 mlf <- function(z,a,b=1,g=1) {
@@ -53,14 +80,18 @@ LTinversion <- function(t, lambda, a, b, g, log_epsilon) {
   theta <- Arg(lambda)
   kmin <- ceiling(-a/2 - theta/2/pi)
   kmax <- floor(a/2 - theta/2/pi)
+  if (kmin > kmax) {
+    k_vett <- c()
+  }
+  else {
   k_vett <- kmin:kmax
+  }
   s_star <- abs(lambda)^(1/a) * exp(1i*(theta+2*k_vett*pi)/a)
   
   phi_s_star <- (Re(s_star)+abs(s_star))/2
   
-  temp <- sort(phi_s_star, index.return=TRUE)
-  phi_s_star <- temp$x
-  index_s_star <- temp$ix
+  phi_s_star <- sort(phi_s_star, index.return=TRUE)$x
+  index_s_star <- sort(phi_s_star, index.return=TRUE)$ix
   s_star <- s_star[index_s_star]
   
   index_save <- phi_s_star > 10^(-15)
@@ -124,7 +155,12 @@ LTinversion <- function(t, lambda, a, b, g, log_epsilon) {
   S <- zexp*F
   Integral <- h*sum(S)/2/pi/1i
   
-  ss_star <- s_star[(iN+1):length(s_star)]
+  if ((iN+1) > length(s_star)) {
+    ss_star <- c()
+  }
+  else {
+    ss_star <- s_star[(iN+1):length(s_star)]
+  }
   Residues <- sum(1/a*(ss_star)^(1-b)*exp(t*ss_star))
   
   E <- Integral + Residues
@@ -145,13 +181,13 @@ OptimalParam_RB <- function(t, phi_s_star_j, phi_s_star_j1, pj, qj, log_epsilon)
   threshold <- 2*sqrt((log_epsilon - log_eps)/t) ;
   sq_phi_star_j1 <- min(sqrt(phi_s_star_j1), threshold - sq_phi_star_j) ;
   
-  if (pj < 10^(-14) && qj < 10^(-14)) {
+  if ((pj < 10^(-14)) && (qj < 10^(-14))) {
     sq_phibar_star_j <- sq_phi_star_j
     sq_phibar_star_j1 <- sq_phi_star_j1
     adm_region <- 1 
   }
   
-  if (pj < 10^(-14) && qj >= 10^(-14)) {
+  if ((pj < 10^(-14)) && (qj >= 10^(-14))) {
     sq_phibar_star_j <- sq_phi_star_j
     if (sq_phi_star_j > 0) {
         f_min <- fac*(sq_phi_star_j/(sq_phi_star_j1-sq_phi_star_j))^qj
@@ -162,7 +198,7 @@ OptimalParam_RB <- function(t, phi_s_star_j, phi_s_star_j1, pj, qj, log_epsilon)
     if (f_min < f_max) {
         f_bar <- f_min + f_min/f_max*(f_max-f_min)
         fq <- f_bar^(-1/qj)
-        sq_phibar_star_j1 <- (2*sq_phi_star_j1-fq*sq_phi_star_j)/(2+fq)
+        sq_phibar_star_j1 <- (2*sq_phi_star_j1 - fq*sq_phi_star_j)/(2+fq)
         adm_region <- 1
     }
     else {
@@ -170,11 +206,11 @@ OptimalParam_RB <- function(t, phi_s_star_j, phi_s_star_j1, pj, qj, log_epsilon)
     }
   }
   
-  if (pj >= 10^(-14) && qj < 10^(-14)) {
+  if ((pj >= 10^(-14)) && (qj < 10^(-14))) {
     sq_phibar_star_j1 <- sq_phi_star_j1
-    f_min = fac*(sq_phi_star_j1/(sq_phi_star_j1-sq_phi_star_j))^pj
+    f_min = fac*(sq_phi_star_j1/(sq_phi_star_j1 - sq_phi_star_j))^pj
     if (f_min < f_max) {
-        f_bar <- f_min + f_min/f_max*(f_max-f_min)
+        f_bar <- f_min + f_min/f_max*(f_max - f_min)
         fp <- f_bar^(-1/pj)
         sq_phibar_star_j <- (2*sq_phi_star_j+fp*sq_phi_star_j1)/(2-fp)
         adm_region <- 1
@@ -184,7 +220,7 @@ OptimalParam_RB <- function(t, phi_s_star_j, phi_s_star_j1, pj, qj, log_epsilon)
     }
   }
   
-  if (pj >= 10^(-14) && qj >= 10^(-14)) {
+  if ((pj >= 10^(-14)) && (qj >= 10^(-14))) {
     f_min = fac*(sq_phi_star_j+sq_phi_star_j1)/(sq_phi_star_j1-sq_phi_star_j)^max(pj,qj)
     if (f_min < f_max) {
         f_min <- max(f_min,1.5)
