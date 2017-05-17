@@ -11,11 +11,11 @@
 Uses Garrapa's code...
 }
 \usage{
-dml(t, a, d = 1)
+dml(t, a, d = 1, log = FALSE)
 
-pml(t, a, d = 1)
+pml(t, a, d = 1, lower.tail = TRUE, log.p = FALSE)
 
-qml(p, a, d = 1)
+qml(p, a, d = 1, lower.tail = TRUE, log.p = FALSE)
 
 rml(n, a, d = 1)
 }
@@ -25,6 +25,10 @@ rml(n, a, d = 1)
 \item{a}{alpha parameter of Mittag-Leffler distribution}
 
 \item{d}{delta (scale) parameter of Mittag-Leffler distribution}
+
+\item{log, log.p}{logical; if TRUE, probabilities p are given as log(p)}
+
+\item{lower.tail}{logical; if TRUE, probabilities are P(X ≤ x) otherwise, P(X > x)}
 
 \item{p}{vector of probabilities}
 

@@ -8,6 +8,8 @@
 #' @param a alpha parameter of Mittag-Leffler distribution
 #' @param d delta (scale) parameter of Mittag-Leffler distribution
 #' @param n Number of random values
+#' @param log,log.p logical; if TRUE, probabilities p are given as log(p)
+#' @param lower.tail logical; if TRUE, probabilities are P(X ≤ x) otherwise, P(X > x)
 #' @details
 #' The generalized Mittag-Leffer function is defined by the power series \deqn{E_(\alpha,\beta) (z) = \sum_(k=0)^(\inf) (z^k)/\Gamma(\alpha k + \beta) }
 #' for complex \eqn{z} and complex \eqn{\alpha, \beta} with \eqn{Real(\alpha) > 0}.
@@ -29,9 +31,14 @@ NULL
 #' @examples
 #' dml(1, 0.8)
 #' @export
-dml <- function(t,a,d=1) {
+dml <- function(t,a,d=1,log=FALSE) {
   ml <- (t^(a-1)/(d^a))*mlf(-(t/d)^a, a, a, 1)
-  return(ml)
+  if(log==FALSE) {
+    return(ml)
+  }
+  else {
+    return(log(ml))
+  }
 }
 
 
@@ -40,9 +47,15 @@ dml <- function(t,a,d=1) {
 #' @examples
 #' pml(2, 0.7, 1.5)
 #' @export
-pml <- function(t,a,d=1) {
+pml <- function(t,a,d=1,lower.tail=TRUE, log.p=FALSE) {
   ml <- 1 - mlf(-(t/d)^a,a,1,1)
-  return(ml)
+  if(lower.tail==FALSE) {ml <- 1 - ml}
+  if(log.p==FALSE) {
+    return(ml)
+  }
+  else {
+    return(log(ml))
+  }
 }
 
 
@@ -51,7 +64,11 @@ pml <- function(t,a,d=1) {
 #' @examples
 #' qml(0.25, 0.9)
 #' @export
-qml <- function(p,a,d=1) {
+qml <- function(p,a,d=1,lower.tail=TRUE, log.p=FALSE) {
+  if(log.p==TRUE) {
+    p <- exp(p)
+  }
+  if(lower.tail==FALSE) {p <- 1 - p}
   x <- numeric(length(p))
   for (i in 1:length(p)) {
     qml_p <- function(t) {pml(t,a,d) - p[i]}
