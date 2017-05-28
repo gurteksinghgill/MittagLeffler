@@ -7,17 +7,14 @@
 \alias{qml}
 \alias{rml}
 \title{Mittag-Leffler Distribution}
-\source{
-Uses Garrapa's code...
-}
 \usage{
-dml(t, a, d = 1, log = FALSE)
+dml(t, a, d = 1, p.log = FALSE, second.type = FALSE)
 
-pml(t, a, d = 1, lower.tail = TRUE, log.p = FALSE)
+pml(q, a, d = 1, second.type = FALSE, lower.tail = TRUE, log.p = FALSE)
 
-qml(p, a, d = 1, lower.tail = TRUE, log.p = FALSE)
+qml(p, a, d = 1, second.type = FALSE, lower.tail = TRUE, log.p = FALSE)
 
-rml(n, a, d = 1)
+rml(n, a, d = 1, second.type = FALSE)
 }
 \arguments{
 \item{t}{vector of quantiles}
@@ -26,7 +23,8 @@ rml(n, a, d = 1)
 
 \item{d}{delta (scale) parameter of Mittag-Leffler distribution}
 
-\item{log, log.p}{logical; if TRUE, probabilities p are given as log(p)}
+\item{second.type}{logical; if FALSE, first type of Mittag-Leffler
+distribution is assumed}
 
 \item{lower.tail}{logical; if TRUE, probabilities are P(X ≤ x) 
 otherwise, P(X > x)}
@@ -34,6 +32,8 @@ otherwise, P(X > x)}
 \item{p}{vector of probabilities}
 
 \item{n}{Number of random values}
+
+\item{log, log.p}{logical; if TRUE, probabilities p are given as log(p)}
 }
 \value{
 \code{dml} returns the density, 
@@ -47,22 +47,29 @@ function, quantile function and random variate generation for the
 two types of Mittag-Leffler distribution.
 }
 \details{
-The generalized Mittag-Leffer function is defined by the power series 
+The generalized (two-parameter) Mittag-Leffer function is defined by the
+power series 
     \deqn{E_(\alpha,\beta) (z) = \sum_(k=0)^(\inf) (z^k)/\Gamma(\alpha 
     k + \beta) }
 for complex \eqn{z} and complex \eqn{\alpha, \beta} with 
 \eqn{Real(\alpha) > 0}.
 
-The Mittag-Leffler CDF is given by 
+The **first type** of Mittag-Leffler distribution assumes the Mittag-Leffler
+function as its tail function, so that the CDF is given by 
 \deqn{F(t; \alpha, \delta) = 1 - E_(\alpha,1) (-(t/\delta)^\alpha)}
 for \eqn{t \ge 0}, \eqn{0 < \alpha \le 1} 
 and scale parameter \eqn{\delta > 0}.
-
-The Mittag-Leffler PDF is given by 
+Its PDF is given by 
 \deqn{f(t; \alpha, \delta) = (t^(\alpha - 1))/(\delta^\alpha) 
-E_(\alpha,\alpha) [-(t/\delta)^\alpha]}
-for \eqn{t \ge 0}, \eqn{0 < \alpha \le 1} 
-and scale parameter \eqn{\delta > 0}.
+E_(\alpha,\alpha) [-(t/\delta)^\alpha].}
+For \eqn{\alpha = 1}, the Mittag-Leffler is identical to the expnoential
+distribution. For \eqn{0 < \alpha < 1}, it is (very) heavy-tailed, i.e.
+has infinite mean. 
+
+The **second type** of Mittag-Leffler distribution is defined via its
+Laplace transform: 
+\deqn{\int_0^{\infty} e^{-st} f(t; \alpha, 1) dt = E_{\alpha,1}(-s)}
+It is light-tailed, i.e. all its moments are finite.
 }
 \examples{
 dml(1, 0.8)
@@ -87,8 +94,14 @@ mlml <- function(X) {
 }
 }
 \references{
-Garrapa's paper and others...
-}
-\seealso{
-Anything here?
+Garrappa, R. (2015). Numerical Evaluation of Two and Three Parameter 
+Mittag-Leffler Functions. SIAM Journal on Numerical Analysis, 53(3),
+ 1350–1369. \url{http://doi.org/10.1137/140971191}
+ 
+Mittag-Leffler distribution. (2017, May 3). 
+In Wikipedia, The Free Encyclopedia.
+\url{https://en.wikipedia.org/w/index.php?title=Mittag-Leffler_distribution&oldid=778429885}
+
+The Mittag-Leffler function. MathWorks File Exchange. 
+\url{https://au.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function}
 }
