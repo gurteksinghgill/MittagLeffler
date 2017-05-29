@@ -1,0 +1,47 @@
+---
+title: "The Mittag-Leffler distributions"
+author: "Gurtek Gill, Peter Straka"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+library(MittagLeffler)
+```
+
+
+
+```{r}
+a <- 0.9
+n <- 100000
+r <- rml(n = n, a = a)
+plot(ecdf(r), xlim=c(0,10))
+x <- seq(0.01,10,0.01)
+y <- pml(q = x, a = a)
+lines(x,y,col=2)
+```
+
+
+
+What's wrong... is stabledist?
+
+```{r, warning=FALSE}
+library(stabledist)
+a <- 0.8
+n <- 100000
+r <- rstable(n = n, alpha = a, beta = 1, gamma = 1, delta = 0, pm = 1)
+cutoff <- 10
+r <- r[r < cutoff]
+hist(r, sqrt(n), freq=FALSE)
+x <- seq(0.01,cutoff,0.01)
+y <- dstable(x = x, alpha = a, beta = 1, gamma = 1, delta = 0, pm = 1)
+lines(x,y, col=2)
+```
+
+
+apparently the problem is not with stabledist. 
+
