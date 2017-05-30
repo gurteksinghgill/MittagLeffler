@@ -1,5 +1,5 @@
 ---
-title: "The Mittag-Leffler distributions"
+title: "Plots of the Mittag-Leffler distributions"
 author: "Gurtek Gill, Peter Straka"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -11,37 +11,71 @@ vignette: >
 
 ```{r}
 library(MittagLeffler)
+a <- 0.7
+d <- 2
+n <- 10000
+cutoff <- 2 * d
 ```
 
+## First type
+
+```{r}
+r <- rml(n = n, a = a, d=d)
+edfun <- ecdf(r)
+x <- seq(0.01,10,0.01)
+plot(x,edfun(x), xlim=c(0,10), type='l')
+y <- pml(q = x, a = a, d=d)
+lines(x,y,col=2)
+z <- 1-exp(-(x/d)^a)
+lines(x,z, lty=2)
+
+
+x <- exp(seq(-10,10,0.01))
+y <- 1-edfun(x)
+plot(x,y, type='l', log='xy')
+y <- pml(q = x, a = a, d=d, lower.tail = FALSE)
+lines(x,y, col=2)
+# power law for large values
+z <- x^(-a)
+lines(x,z, lty=2)
+# stretched exponential for small values
+w <- exp(-(x/d)^a)
+lines(x,w, lty=2)
+```
 
 
 ```{r}
-a <- 0.9
-n <- 100000
-r <- rml(n = n, a = a)
-plot(ecdf(r), xlim=c(0,10))
-x <- seq(0.01,10,0.01)
-y <- pml(q = x, a = a)
-lines(x,y,col=2)
-```
-
-
-
-What's wrong... is stabledist?
-
-```{r, warning=FALSE}
-library(stabledist)
-a <- 0.8
-n <- 100000
-r <- rstable(n = n, alpha = a, beta = 1, gamma = 1, delta = 0, pm = 1)
 cutoff <- 10
-r <- r[r < cutoff]
-hist(r, sqrt(n), freq=FALSE)
+fac <- sum(r <= cutoff) / n
+r <- r[r <= cutoff]
+hist(r, freq = FALSE, breaks = 50)
 x <- seq(0.01,cutoff,0.01)
-y <- dstable(x = x, alpha = a, beta = 1, gamma = 1, delta = 0, pm = 1)
+y <- dml(q = x, a = a) / fac
 lines(x,y, col=2)
 ```
 
 
-apparently the problem is not with stabledist. 
+
+
+## Second type
+
+```{r}
+library(MittagLeffler)
+n <- 10^5
+a <- 0.6
+r <- rml(n = n, a = a, d=d, second.type = TRUE)
+plot(ecdf(r), xlim=c(0,cutoff))
+x <- seq(0.01,cutoff,0.01)
+y <- pml(q = x, a = a, d=d, second.type = TRUE)
+lines(x,y, col=2)
+```
+
+Draw the density version with histograms, which looks nicer:
+
+```{r, warning=FALSE}
+hist(r, freq = FALSE, breaks = 20)
+x <- seq(0.01,cutoff,0.01)
+y <- dml(q = x, a = a, d=d, second.type = TRUE)
+lines(x,y, col=2)
+```
 

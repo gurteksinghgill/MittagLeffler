@@ -63,11 +63,11 @@ NULL
 #' @examples
 #' dml(1, 0.8)
 #' @export
-dml <- function(t,a,d=1,p.log=FALSE, second.type=FALSE){
+dml <- function(q,a,d=1,p.log=FALSE, second.type=FALSE){
   if (second.type==FALSE) {
-    return(dml1(t,a,d,p.log))
+    return(dml1(q,a,d,p.log))
   } else {
-    return(dml2(t,a,d,p.log))
+    return(dml2(q,a,d,p.log))
   }
 }
 
@@ -194,7 +194,8 @@ rml <- function(n,a,d=1, second.type=FALSE){
 
 # unit scale; see e.g. Haubold, Mathai & Saxena (2011)
 rml1 <- function(n, a){
-  y <- stabledist::rstable(n, alpha=a, beta=1, gamma=1, delta=0, pm=1)
+  scale <- (cos(pi*a/2))^(1/a)
+  y <- stabledist::rstable(n, alpha=a, beta=1, gamma=scale, delta=0, pm=1)
   x <- stats::rexp(n)
   y * x^(1/a)
 }
