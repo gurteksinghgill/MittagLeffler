@@ -11,9 +11,9 @@ vignette: >
 
 ```{r}
 library(MittagLeffler)
-a <- 0.7
+a <- 0.95
 d <- 2
-n <- 10000
+n <- 100000
 cutoff <- 2 * d
 ```
 
@@ -50,7 +50,7 @@ fac <- sum(r <= cutoff) / n
 r <- r[r <= cutoff]
 hist(r, freq = FALSE, breaks = 50)
 x <- seq(0.01,cutoff,0.01)
-y <- dml(q = x, a = a) / fac
+y <- dml(q = x, a = a, d=d) / fac
 lines(x,y, col=2)
 ```
 
