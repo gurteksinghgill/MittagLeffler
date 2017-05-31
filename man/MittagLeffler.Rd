@@ -8,67 +8,71 @@
 \alias{rml}
 \title{Mittag-Leffler Distribution}
 \usage{
-dml(t, a, d = 1, p.log = FALSE, second.type = FALSE)
+dml(x, alpha, scale = 1, log = FALSE, second.type = FALSE)
 
-pml(q, a, d = 1, second.type = FALSE, lower.tail = TRUE, log.p = FALSE)
+pml(q, alpha, scale = 1, second.type = FALSE, lower.tail = TRUE,
+  log.p = FALSE)
 
-qml(p, a, d = 1, second.type = FALSE, lower.tail = TRUE, log.p = FALSE)
+qml(p, alpha, scale = 1, second.type = FALSE, lower.tail = TRUE,
+  log.p = FALSE)
 
-rml(n, a, d = 1, second.type = FALSE)
+rml(n, alpha, scale = 1, second.type = FALSE)
 }
 \arguments{
-\item{t}{vector of quantiles}
+\item{x, q}{vector of quantiles.}
 
-\item{a}{alpha parameter of Mittag-Leffler distribution}
+\item{alpha}{tail parameter.}
 
-\item{d}{delta (scale) parameter of Mittag-Leffler distribution}
+\item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
 
-\item{second.type}{logical; if FALSE, first type of Mittag-Leffler
-distribution is assumed}
+\item{second.type}{logical; if FALSE (default), 
+first type of Mittag-Leffler distribution is assumed.}
 
-\item{lower.tail}{logical; if TRUE, probabilities are P(X ≤ x) 
-otherwise, P(X > x)}
+\item{lower.tail}{logical; if TRUE, probabilities are P[X ≤ x]
+otherwise, P[X > x]}
 
-\item{p}{vector of probabilities}
+\item{p}{vector of probabilities.}
 
-\item{n}{Number of random values}
+\item{n}{number of observations. If length(n) > 1, the length is taken
+to be the number required.}
 
-\item{log, log.p}{logical; if TRUE, probabilities p are given as log(p)}
+\item{tau}{scale parameter.}
 }
 \value{
-\code{dml} returns the density, 
-        \code{pml} returns the distribution function, 
-        \code{qml} returns the quantile function, and 
-        \code{rml} generates random values.
+\code{dml} returns the density,
+        \code{pml} returns the distribution function,
+        \code{qml} returns the quantile function, and
+        \code{rml} generates random variables.
 }
 \description{
-These functions provide probability density, cumulative distribution
-function, quantile function and random variate generation for the 
+Probability density, cumulative distribution
+function, quantile function and random variate generation for the
 two types of Mittag-Leffler distribution.
 }
 \details{
 The generalized (two-parameter) Mittag-Leffer function is defined by the
-power series 
-    \deqn{E_(\alpha,\beta) (z) = \sum_(k=0)^(\inf) (z^k)/\Gamma(\alpha 
+power series
+    \deqn{E_{\alpha,\beta} (z) = \sum_{k=0}^\infty  z^k / \Gamma(\alpha
     k + \beta) }
-for complex \eqn{z} and complex \eqn{\alpha, \beta} with 
+for complex \eqn{z} and complex \eqn{\alpha, \beta} with
 \eqn{Real(\alpha) > 0}.
 
 The **first type** of Mittag-Leffler distribution assumes the Mittag-Leffler
-function as its tail function, so that the CDF is given by 
-\deqn{F(t; \alpha, \delta) = 1 - E_(\alpha,1) (-(t/\delta)^\alpha)}
-for \eqn{t \ge 0}, \eqn{0 < \alpha \le 1} 
-and scale parameter \eqn{\delta > 0}.
-Its PDF is given by 
-\deqn{f(t; \alpha, \delta) = (t^(\alpha - 1))/(\delta^\alpha) 
-E_(\alpha,\alpha) [-(t/\delta)^\alpha].}
-For \eqn{\alpha = 1}, the Mittag-Leffler is identical to the expnoential
+function as its tail function, so that the CDF is given by
+\deqn{F(t; \alpha, \tau) = 1 - E_{\alpha,1} (-(t/\tau)^\alpha)}
+for \eqn{t \ge 0}, \eqn{0 < \alpha \le 1}
+and scale parameter \eqn{\tau > 0}.
+Its PDF is given by
+\deqn{f(t; \alpha, \tau) = t^{\alpha - 1} 
+E_{\alpha,\alpha} [-(t/\tau)^\alpha] / \tau^\alpha.}
+As \eqn{\alpha} approaches 1 from below, the Mittag-Leffler converges
+(weakly) to the expnoential
 distribution. For \eqn{0 < \alpha < 1}, it is (very) heavy-tailed, i.e.
-has infinite mean. 
+has infinite mean.
 
-The **second type** of Mittag-Leffler distribution is defined via its
-Laplace transform: 
-\deqn{\int_0^{\infty} e^{-st} f(t; \alpha, 1) dt = E_{\alpha,1}(-s)}
+The **second type** of Mittag-Leffler distribution is defined via the
+Laplace transform of its density f:
+\deqn{\int_0^\infty \exp(-st) f(t; \alpha, 1) dt = E_{\alpha,1}(-s)}
 It is light-tailed, i.e. all its moments are finite.
 }
 \examples{
@@ -94,14 +98,18 @@ mlml <- function(X) {
 }
 }
 \references{
-Garrappa, R. (2015). Numerical Evaluation of Two and Three Parameter 
+Haubold, H. J., Mathai, A. M., & Saxena, R. K. (2011). Mittag-Leffler
+Functions and Their Applications. Journal of Applied Mathematics, 2011, 
+1–51. \url{http://doi.org/10.1155/2011/298628}
+
+Garrappa, R. (2015). Numerical Evaluation of Two and Three Parameter
 Mittag-Leffler Functions. SIAM Journal on Numerical Analysis, 53(3),
  1350–1369. \url{http://doi.org/10.1137/140971191}
- 
-Mittag-Leffler distribution. (2017, May 3). 
+
+Mittag-Leffler distribution. (2017, May 3).
 In Wikipedia, The Free Encyclopedia.
 \url{https://en.wikipedia.org/w/index.php?title=Mittag-Leffler_distribution&oldid=778429885}
 
-The Mittag-Leffler function. MathWorks File Exchange. 
+The Mittag-Leffler function. MathWorks File Exchange.
 \url{https://au.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function}
 }

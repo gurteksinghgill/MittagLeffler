@@ -4,46 +4,54 @@
 #' function, quantile function and random variate generation for the
 #' two types of Mittag-Leffler distribution.
 #'
-#' @param t vector of quantiles
-#' @param p vector of probabilities
-#' @param a alpha parameter of Mittag-Leffler distribution
-#' @param d delta (scale) parameter of Mittag-Leffler distribution
-#' @param n Number of random values
-#' @param log,log.p logical; if TRUE, probabilities p are given as log(p)
-#' @param lower.tail logical; if TRUE, probabilities are P(X ≤ x)
-#'     otherwise, P(X > x)
-#' @param second.type logical; if FALSE, first type of Mittag-Leffler
-#'     distribution is assumed
+#' @param x,q vector of quantiles.
+#' @param p vector of probabilities.
+#' @param n number of observations. If length(n) > 1, the length is taken
+#'        to be the number required.
+#' @param alpha tail parameter.
+#' @param tau scale parameter.
+#' @param second.type logical; if FALSE (default), 
+#'        first type of Mittag-Leffler distribution is assumed.
+#' @param log,log.p logical; if TRUE, probabilities p are given as log(p).
+#' @param lower.tail logical; if TRUE, probabilities are P[X ≤ x]
+#'        otherwise, P[X > x]
+
 #' @details
 #' The generalized (two-parameter) Mittag-Leffer function is defined by the
 #' power series
-#'     \deqn{E_(\alpha,\beta) (z) = \sum_(k=0)^(\inf) (z^k)/\Gamma(\alpha
+#'     \deqn{E_{\alpha,\beta} (z) = \sum_{k=0}^\infty  z^k / \Gamma(\alpha
 #'     k + \beta) }
 #' for complex \eqn{z} and complex \eqn{\alpha, \beta} with
 #' \eqn{Real(\alpha) > 0}.
 #'
 #' The **first type** of Mittag-Leffler distribution assumes the Mittag-Leffler
 #' function as its tail function, so that the CDF is given by
-#' \deqn{F(t; \alpha, \delta) = 1 - E_(\alpha,1) (-(t/\delta)^\alpha)}
+#' \deqn{F(t; \alpha, \tau) = 1 - E_{\alpha,1} (-(t/\tau)^\alpha)}
 #' for \eqn{t \ge 0}, \eqn{0 < \alpha \le 1}
-#' and scale parameter \eqn{\delta > 0}.
+#' and scale parameter \eqn{\tau > 0}.
 #' Its PDF is given by
-#' \deqn{f(t; \alpha, \delta) = (t^(\alpha - 1))/(\delta^\alpha)
-#' E_(\alpha,\alpha) [-(t/\delta)^\alpha].}
-#' For \eqn{\alpha = 1}, the Mittag-Leffler is identical to the expnoential
+#' \deqn{f(t; \alpha, \tau) = t^{\alpha - 1} 
+#' E_{\alpha,\alpha} [-(t/\tau)^\alpha] / \tau^\alpha.}
+#' As \eqn{\alpha} approaches 1 from below, the Mittag-Leffler converges
+#' (weakly) to the expnoential
 #' distribution. For \eqn{0 < \alpha < 1}, it is (very) heavy-tailed, i.e.
 #' has infinite mean.
 #'
-#' The **second type** of Mittag-Leffler distribution is defined via its
-#' Laplace transform:
-#' \deqn{\int_0^{\infty} e^{-st} f(t; \alpha, 1) dt = E_{\alpha,1}(-s)}
+#' The **second type** of Mittag-Leffler distribution is defined via the
+#' Laplace transform of its density f:
+#' \deqn{\int_0^\infty \exp(-st) f(t; \alpha, 1) dt = E_{\alpha,1}(-s)}
 #' It is light-tailed, i.e. all its moments are finite.
 #'
 #' @return \code{dml} returns the density,
 #'         \code{pml} returns the distribution function,
 #'         \code{qml} returns the quantile function, and
 #'         \code{rml} generates random variables.
+
 #' @references
+#' Haubold, H. J., Mathai, A. M., & Saxena, R. K. (2011). Mittag-Leffler
+#' Functions and Their Applications. Journal of Applied Mathematics, 2011, 
+#' 1–51. \url{http://doi.org/10.1155/2011/298628}
+#' 
 #' Garrappa, R. (2015). Numerical Evaluation of Two and Three Parameter
 #' Mittag-Leffler Functions. SIAM Journal on Numerical Analysis, 53(3),
 #'  1350–1369. \url{http://doi.org/10.1137/140971191}
@@ -63,31 +71,31 @@ NULL
 #' @examples
 #' dml(1, 0.8)
 #' @export
-dml <- function(q,a,d=1,p.log=FALSE, second.type=FALSE){
+dml <- function(x,alpha,scale=1,log=FALSE, second.type=FALSE){
   if (second.type==FALSE) {
-    return(dml1(q,a,d,p.log))
+    return(dml1(x,alpha,scale,log))
   } else {
-    return(dml2(q,a,d,p.log))
+    return(dml2(x,alpha,scale,log))
   }
 }
 
 # first type
-dml1 <- function(t,a,d=1,p.log=FALSE) {
-  ml <- (t^(a-1)/(d^a))*mlf(-(t/d)^a, a, a, 1)
-  if (p.log) {
+dml1 <- function(t,alpha,scale=1,log=FALSE) {
+  ml <- (t^(alpha-1)/(scale^alpha))*mlf(-(t/scale)^alpha, alpha, alpha, 1)
+  if (log) {
     ml <- log(ml)
   }
   return(ml)
 }
 
 # second type
-dml2 <- function(u,a,d=1,p.log=FALSE) {
-  # find the distribution of E(d^(1/a)), where E() is the inverse stable
+dml2 <- function(u,alpha,scale=1,log=FALSE) {
+  # find the distribution of E(scale^(1/alpha)), where E() is the inverse stable
   # subordinator; Meerschaert & Straka, Eq.(9)
-  t = d^(1/a)
-  h=(t/a)*u^(-1-1/a)*stabledist::dstable(t*u^(-1/a), alpha=a, beta=1.0,
+  t = scale^(1/alpha)
+  h=(t/alpha)*u^(-1-1/alpha)*stabledist::dstable(t*u^(-1/alpha), alpha=alpha, beta=1.0,
                              gamma=1.0, delta=0.0, pm=1)
-  if (p.log) {
+  if (log) {
     h <- log(h)
   }
   return(h)
@@ -98,13 +106,14 @@ dml2 <- function(u,a,d=1,p.log=FALSE) {
 #' @examples
 #' pml(2, 0.7, 1.5)
 #' @export
-pml <- function(q,a,d=1, second.type=FALSE, lower.tail=TRUE, log.p=FALSE) {
+pml <- function(q, alpha, scale=1, second.type=FALSE, lower.tail=TRUE, 
+                log.p=FALSE) {
   # rescale
-  q <- q/d
+  q <- q/scale
   if (!second.type){
-    p <- pml1(q,a)
+    p <- pml1(q,alpha)
   } else {
-    p <- pml2(q,a)
+    p <- pml2(q,alpha)
   }
   if (!lower.tail) {
     p <- 1-p
@@ -116,13 +125,13 @@ pml <- function(q,a,d=1, second.type=FALSE, lower.tail=TRUE, log.p=FALSE) {
 }
 
 # type 1 with unit scale
-pml1 <- function(q,a) {
-  p <- 1 - mlf(-(q)^a,a,1,1)
+pml1 <- function(q,alpha) {
+  p <- 1 - mlf(-(q)^alpha,alpha,1,1)
 }
 
 # type 2 with unit scale
-pml2 <- function(q,a) {
-  p <- stabledist::pstable(q^(-1/a), alpha=a, beta=1, gamma=1, delta=0,
+pml2 <- function(q,alpha) {
+  p <- stabledist::pstable(q^(-1/alpha), alpha=alpha, beta=1, gamma=1, delta=0,
                            pm=1, lower.tail = FALSE)
 }
 
@@ -131,7 +140,7 @@ pml2 <- function(q,a) {
 #' qml(0.25, 0.9)
 #' @export
 
-qml <- function(p, a, d=1, second.type=FALSE, lower.tail=TRUE,
+qml <- function(p, alpha, scale=1, second.type=FALSE, lower.tail=TRUE,
                 log.p=FALSE) {
   if (log.p) {
     p <- exp(p)
@@ -140,17 +149,17 @@ qml <- function(p, a, d=1, second.type=FALSE, lower.tail=TRUE,
     p <- 1-p
   }
   if (!second.type) {
-    q <- qml1(p, a, d)
+    q <- qml1(p, alpha, scale)
   } else {
-    q <- d * qml2(p, a)
+    q <- scale * qml2(p, alpha)
   }
   return(q)
 }
 
-qml1 <- function(p,a,d=1) {
+qml1 <- function(p,alpha,scale=1) {
   x <- numeric(length(p))
   for (i in 1:length(p)) {
-    qml_p <- function(t) {pml(t,a,d) - p[i]}
+    qml_p <- function(t) {pml(t,alpha,scale) - p[i]}
     x[i] <- stats::uniroot(qml_p, interval = c(10^-14,100),
                            extendInt="upX")$root
   }
@@ -158,9 +167,9 @@ qml1 <- function(p,a,d=1) {
 }
 
 # type 2 with unit scale
-qml2 <- function(p, a){
-  q <- stabledist::qstable(p, alpha=a, beta=1, gamma=1, delta=0, pm=1,
-                           lower.tail=FALSE)^(-a)
+qml2 <- function(p, alpha){
+  q <- stabledist::qstable(p, alpha=alpha, beta=1, gamma=1, delta=0, pm=1,
+                           lower.tail=FALSE)^(-alpha)
 }
 
 #' @rdname MittagLeffler
@@ -183,23 +192,26 @@ qml2 <- function(p, a){
 #'   print(paste("alpha =", ml_a, "delta =", ml_d))
 #' }
 #' @export
-rml <- function(n,a,d=1, second.type=FALSE){
+rml <- function(n,alpha,scale=1, second.type=FALSE){
+  if (length(n) > 1){
+    n <- length(n)
+  }
   if (!second.type){
-    x <- d * rml1(n,a)
+    x <- scale * rml1(n,alpha)
   } else {
-    x <- d * rml2(n,a)
+    x <- scale * rml2(n,alpha)
   }
   return(x)
 }
 
 # unit scale; see e.g. Haubold, Mathai & Saxena (2011)
-rml1 <- function(n, a){
-  scale <- (cos(pi*a/2))^(1/a)
-  y <- stabledist::rstable(n, alpha=a, beta=1, gamma=scale, delta=0, pm=1)
+rml1 <- function(n, alpha){
+  gamma <- (cos(pi*alpha/2))^(1/alpha)
+  y <- stabledist::rstable(n, alpha=alpha, beta=1, gamma=gamma, delta=0, pm=1)
   x <- stats::rexp(n)
-  y * x^(1/a)
+  y * x^(1/alpha)
 }
 
-rml2 <- function(n, a){
-  stabledist::rstable(n, alpha=a, beta=1, gamma=1, delta=0, pm=1)^(-a)
+rml2 <- function(n, alpha){
+  stabledist::rstable(n, alpha=alpha, beta=1, gamma=1, delta=0, pm=1)^(-alpha)
 }
