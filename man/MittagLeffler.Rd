@@ -78,11 +78,11 @@ It is light-tailed, i.e. all its moments are finite.
 \examples{
 dml(1, 0.8)
 pml(2, 0.7, 1.5)
-qml(0.25, 0.9)
+qml(p = c(0.25, 0.5, 0.75), alpha = 0.6, scale = 100)
 rml(1000, 0.7, 1)
 
-##Approximating Mittag-Leffler distribution parameters
-##alpha and delta for observations X by Maximum Likelihood
+## Fitting Mittag-Leffler distribution to observations X by Maximum
+## Likelihood
 
 mlml <- function(X) {
   log_l <- function(theta) {
@@ -94,8 +94,9 @@ mlml <- function(X) {
   ml_theta <- stats::optim(c(0.5,0.5), fn=log_l)$par
   ml_a <- 1/(1 + exp(-ml_theta[1]))
   ml_d <- exp(ml_theta[2])
-  print(paste("alpha =", ml_a, "delta =", ml_d))
+  print(paste("alpha =", ml_a, "scale =", ml_d))
 }
+mlml(rml(n = 100, alpha = 0.9, scale = 2))
 }
 \references{
 Haubold, H. J., Mathai, A. M., & Saxena, R. K. (2011). Mittag-Leffler

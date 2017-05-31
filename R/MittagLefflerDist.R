@@ -72,6 +72,9 @@ NULL
 #' dml(1, 0.8)
 #' @export
 dml <- function(x,alpha,scale=1,log=FALSE, second.type=FALSE){
+  if (length(alpha) > 1){
+    stop("length(alpha) must be 1.")
+  }
   if (second.type==FALSE) {
     return(dml1(x,alpha,scale,log))
   } else {
@@ -137,7 +140,7 @@ pml2 <- function(q,alpha) {
 
 #' @rdname MittagLeffler
 #' @examples
-#' qml(0.25, 0.9)
+#' qml(p = c(0.25, 0.5, 0.75), alpha = 0.6, scale = 100)
 #' @export
 
 qml <- function(p, alpha, scale=1, second.type=FALSE, lower.tail=TRUE,
@@ -176,8 +179,8 @@ qml2 <- function(p, alpha){
 #' @examples
 #' rml(1000, 0.7, 1)
 #'
-#' ##Approximating Mittag-Leffler distribution parameters
-#' ##alpha and delta for observations X by Maximum Likelihood
+#' ## Fitting Mittag-Leffler distribution to observations X by Maximum
+#' ## Likelihood
 #'
 #' mlml <- function(X) {
 #'   log_l <- function(theta) {
@@ -189,8 +192,10 @@ qml2 <- function(p, alpha){
 #'   ml_theta <- stats::optim(c(0.5,0.5), fn=log_l)$par
 #'   ml_a <- 1/(1 + exp(-ml_theta[1]))
 #'   ml_d <- exp(ml_theta[2])
-#'   print(paste("alpha =", ml_a, "delta =", ml_d))
+#'   print(paste("alpha =", ml_a, "scale =", ml_d))
 #' }
+#' mlml(rml(n = 100, alpha = 0.9, scale = 2))
+
 #' @export
 rml <- function(n,alpha,scale=1, second.type=FALSE){
   if (length(n) > 1){
