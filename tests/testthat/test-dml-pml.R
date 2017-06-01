@@ -2,9 +2,9 @@ library(MittagLeffler)
 context("Does dml() integrate to pml()?")
 
 alphavec <- seq(0.4, 0.9, 0.1)
-scalevec <- 10^seq(-3,3,2)
+scalevec <- 10^seq(-3,3,1)
 pvec <- seq(0.1, 0.9, 0.1)
-tol <- 0.005
+tol <- 0.01
 
 test_that("dml() integrates to pml() for Type 1", {
   for (alpha in alphavec){
@@ -15,7 +15,12 @@ test_that("dml() integrates to pml() for Type 1", {
       qvec <- qml(pvec, alpha, scale, second.type = FALSE)
       for (i in 1:(length(qvec)-1)){
                 p2 <- integrate(ml_dens, qvec[i], qvec[i+1])$value
-        expect_equal(object = p2, expected = pvec[i+1]-pvec[i], tol=tol)
+        expect_equal(object = p2, expected = pvec[i+1]-pvec[i], tol=tol, 
+                     info = paste("alpha=", toString(alpha), 
+                                  "scale=", toString(scale),
+                                  "q=", toString(qvec[i]), 
+                                  "p=", toString(pvec[i]), 
+                                  "p2=", toString(p2)))
       }
     }
   }
@@ -30,7 +35,12 @@ test_that("dml() integrates to pml() for Type 2", {
       }
       for (i in 1:(length(qvec)-1)){
         p2 <- integrate(ml_dens, qvec[i], qvec[i+1])$value
-        expect_equal(object = p2, expected = pvec[i+1]-pvec[i], tol=tol)
+        expect_equal(object = p2, expected = pvec[i+1]-pvec[i], tol=tol,
+                     info = paste("alpha=", toString(alpha), 
+                                  "scale=", toString(scale),
+                                  "q=", toString(qvec[i]), 
+                                  "p=", toString(pvec[i]), 
+                                  "p2=", toString(p2)))
       }
     }
   }

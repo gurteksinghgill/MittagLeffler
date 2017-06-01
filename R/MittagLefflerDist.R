@@ -66,7 +66,6 @@
 #' @name MittagLeffler
 NULL
 
-
 #' @rdname MittagLeffler
 #' @examples
 #' dml(1, 0.8)
@@ -78,7 +77,8 @@ dml <- function(x,alpha,scale=1,log=FALSE, second.type=FALSE){
   if (second.type==FALSE) {
     return(dml1(x,alpha,scale,log))
   } else {
-    return(dml2(x,alpha,scale,log))
+    y <- dml2(x/scale,alpha)/scale
+    if (!log) return(y) else return(log(y))
   }
 }
 
@@ -91,17 +91,19 @@ dml1 <- function(t,alpha,scale=1,log=FALSE) {
   return(ml)
 }
 
-# second type
-dml2 <- function(u,alpha,scale=1,log=FALSE) {
-  # find the distribution of E(scale^(1/alpha)), where E() is the inverse stable
-  # subordinator; Meerschaert & Straka, Eq.(9)
-  t = scale^(1/alpha)
-  h=(t/alpha)*u^(-1-1/alpha)*stabledist::dstable(t*u^(-1/alpha), alpha=alpha, beta=1.0,
-                             gamma=1.0, delta=0.0, pm=1)
-  if (log) {
-    h <- log(h)
-  }
-  return(h)
+# second type, unit scale
+dml2 <- function(u,alpha) {
+  # find the distribution of E(1), where E() is the inverse stable
+  # subordinator; Meerschaert & Straka, Eq.(9).
+  # The scale parameter in the Samorodnitsky & Taqqu representation which
+  # makes the stable distribution have Laplace transform exp(-s^alpha):
+  gamma <- (cos(pi*alpha/2))^(1/alpha)
+  
+  h=(1/alpha)*u^(-1-1/alpha)*
+  #  stable::dstable(x = u^(-1/alpha), loc = 0, disp = 1, skew = 1, 
+  #                  tail = alpha, eps = 1.0e-6)
+     stabledist::dstable(x = u^(-1/alpha), alpha = alpha, beta = 1, 
+                         gamma = gamma, delta = 0, pm = 1)
 }
 
 
@@ -134,7 +136,10 @@ pml1 <- function(q,alpha) {
 
 # type 2 with unit scale
 pml2 <- function(q,alpha) {
-  p <- stabledist::pstable(q^(-1/alpha), alpha=alpha, beta=1, gamma=1, delta=0,
+  # the scale parameter in the Samorodnitsky & Taqqu representation which
+  # makes the stable distribution have Laplace transform exp(-s^alpha):
+  gamma <- (cos(pi*alpha/2))^(1/alpha)
+  p <- stabledist::pstable(q^(-1/alpha), alpha=alpha, beta=1, gamma=gamma, delta=0,
                            pm=1, lower.tail = FALSE)
 }
 
@@ -164,14 +169,17 @@ qml1 <- function(p,alpha,scale=1) {
   for (i in 1:length(p)) {
     qml_p <- function(t) {pml(t,alpha,scale) - p[i]}
     x[i] <- stats::uniroot(qml_p, interval = c(10^-14,100),
-                           extendInt="upX")$root
+                           extendInt="upX", tol = 1e-14)$root
   }
   return(x)
 }
 
 # type 2 with unit scale
 qml2 <- function(p, alpha){
-  q <- stabledist::qstable(p, alpha=alpha, beta=1, gamma=1, delta=0, pm=1,
+  # the scale parameter in the Samorodnitsky & Taqqu representation which
+  # makes the stable distribution have Laplace transform exp(-s^alpha):
+  gamma <- (cos(pi*alpha/2))^(1/alpha)
+  q <- stabledist::qstable(p, alpha=alpha, beta=1, gamma=gamma, delta=0, pm=1,
                            lower.tail=FALSE)^(-alpha)
 }
 
@@ -211,6 +219,8 @@ rml <- function(n,alpha,scale=1, second.type=FALSE){
 
 # unit scale; see e.g. Haubold, Mathai & Saxena (2011)
 rml1 <- function(n, alpha){
+  # the scale parameter in the Samorodnitsky & Taqqu representation which
+  # makes the stable distribution have Laplace transform exp(-s^alpha):
   gamma <- (cos(pi*alpha/2))^(1/alpha)
   y <- stabledist::rstable(n, alpha=alpha, beta=1, gamma=gamma, delta=0, pm=1)
   x <- stats::rexp(n)
@@ -218,5 +228,8 @@ rml1 <- function(n, alpha){
 }
 
 rml2 <- function(n, alpha){
-  stabledist::rstable(n, alpha=alpha, beta=1, gamma=1, delta=0, pm=1)^(-alpha)
+  # the scale parameter in the Samorodnitsky & Taqqu representation which
+  # makes the stable distribution have Laplace transform exp(-s^alpha):
+  gamma <- (cos(pi*alpha/2))^(1/alpha)
+  stabledist::rstable(n, alpha=alpha, beta=1, gamma=gamma, delta=0, pm=1)^(-alpha)
 }
