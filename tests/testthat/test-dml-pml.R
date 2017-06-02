@@ -34,7 +34,7 @@ test_that("dml() integrates to pml() for Type 2", {
         dml(x = x, alpha = alpha, scale = scale, second.type = TRUE)
       }
       for (i in 1:(length(qvec)-1)){
-        p2 <- integrate(ml_dens, qvec[i], qvec[i+1])$value
+        p2 <- suppressWarnings(integrate(ml_dens, qvec[i], qvec[i+1])$value)
         expect_equal(object = p2, expected = pvec[i+1]-pvec[i], tol=tol,
                      info = paste("alpha=", toString(alpha), 
                                   "scale=", toString(scale),
