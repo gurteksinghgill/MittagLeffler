@@ -1,6 +1,6 @@
 ---
 title: "Calculations"
-author: "Peter"
+author: "Peter Straka"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: bibliography.bib

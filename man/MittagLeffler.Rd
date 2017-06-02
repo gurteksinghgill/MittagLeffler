@@ -8,20 +8,22 @@
 \alias{rml}
 \title{Mittag-Leffler Distribution}
 \usage{
-dml(x, alpha, scale = 1, log = FALSE, second.type = FALSE)
+dml(x, tail, scale = 1, log = FALSE, second.type = FALSE)
 
-pml(q, alpha, scale = 1, second.type = FALSE, lower.tail = TRUE,
+pml(q, tail, scale = 1, second.type = FALSE, lower.tail = TRUE,
   log.p = FALSE)
 
-qml(p, alpha, scale = 1, second.type = FALSE, lower.tail = TRUE,
+qml(p, tail, scale = 1, second.type = FALSE, lower.tail = TRUE,
   log.p = FALSE)
 
-rml(n, alpha, scale = 1, second.type = FALSE)
+rml(n, tail, scale = 1, second.type = FALSE)
 }
 \arguments{
 \item{x, q}{vector of quantiles.}
 
-\item{alpha}{tail parameter.}
+\item{tail}{tail parameter.}
+
+\item{scale}{scale parameter.}
 
 \item{log, log.p}{logical; if TRUE, probabilities p are given as log(p).}
 
@@ -35,8 +37,6 @@ otherwise, P[X > x]}
 
 \item{n}{number of observations. If length(n) > 1, the length is taken
 to be the number required.}
-
-\item{tau}{scale parameter.}
 }
 \value{
 \code{dml} returns the density,
@@ -59,12 +59,12 @@ for complex \eqn{z} and complex \eqn{\alpha, \beta} with
 
 The **first type** of Mittag-Leffler distribution assumes the Mittag-Leffler
 function as its tail function, so that the CDF is given by
-\deqn{F(t; \alpha, \tau) = 1 - E_{\alpha,1} (-(t/\tau)^\alpha)}
-for \eqn{t \ge 0}, \eqn{0 < \alpha \le 1}
+\deqn{F(q; \alpha, \tau) = 1 - E_{\alpha,1} (-(q/\tau)^\alpha)}
+for \eqn{q \ge 0}, tail parameter \eqn{0 < \alpha \le 1},
 and scale parameter \eqn{\tau > 0}.
 Its PDF is given by
-\deqn{f(t; \alpha, \tau) = t^{\alpha - 1} 
-E_{\alpha,\alpha} [-(t/\tau)^\alpha] / \tau^\alpha.}
+\deqn{f(x; \alpha, \tau) = x^{\alpha - 1} 
+E_{\alpha,\alpha} [-(x/\tau)^\alpha] / \tau^\alpha.}
 As \eqn{\alpha} approaches 1 from below, the Mittag-Leffler converges
 (weakly) to the expnoential
 distribution. For \eqn{0 < \alpha < 1}, it is (very) heavy-tailed, i.e.
@@ -72,13 +72,16 @@ has infinite mean.
 
 The **second type** of Mittag-Leffler distribution is defined via the
 Laplace transform of its density f:
-\deqn{\int_0^\infty \exp(-st) f(t; \alpha, 1) dt = E_{\alpha,1}(-s)}
+\deqn{\int_0^\infty \exp(-sx) f(x; \alpha, 1) dx = E_{\alpha,1}(-s)}
 It is light-tailed, i.e. all its moments are finite.
+At scale \eqn{\tau}, its density is 
+\deqn{f(x; \alpha, \tau) = f(x/\tau; \alpha, 1) / \tau.}
 }
 \examples{
 dml(1, 0.8)
+dml(1, 0.6, second.type=TRUE)
 pml(2, 0.7, 1.5)
-qml(p = c(0.25, 0.5, 0.75), alpha = 0.6, scale = 100)
+qml(p = c(0.25, 0.5, 0.75), tail = 0.6, scale = 100)
 rml(1000, 0.7, 1)
 
 ## Fitting Mittag-Leffler distribution to observations X by Maximum
@@ -94,9 +97,9 @@ mlml <- function(X) {
   ml_theta <- stats::optim(c(0.5,0.5), fn=log_l)$par
   ml_a <- 1/(1 + exp(-ml_theta[1]))
   ml_d <- exp(ml_theta[2])
-  print(paste("alpha =", ml_a, "scale =", ml_d))
+  print(paste("tail =", ml_a, "scale =", ml_d))
 }
-mlml(rml(n = 100, alpha = 0.9, scale = 2))
+mlml(rml(n = 100, tail = 0.9, scale = 2))
 }
 \references{
 Haubold, H. J., Mathai, A. M., & Saxena, R. K. (2011). Mittag-Leffler
