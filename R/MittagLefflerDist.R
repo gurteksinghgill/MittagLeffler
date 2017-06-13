@@ -2,7 +2,8 @@
 #'
 #' Probability density, cumulative distribution
 #' function, quantile function and random variate generation for the
-#' two types of Mittag-Leffler distribution.
+#' two types of Mittag-Leffler distribution, as well as the 1, 2 and 3
+#' parameter Mittag-Leffler function. 
 #'
 #' @param x,q vector of quantiles.
 #' @param p vector of probabilities.
@@ -65,10 +66,10 @@
 #' The Mittag-Leffler function. MathWorks File Exchange.
 #' \url{https://au.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function}
 
-#' @name MittagLeffler
+#' @name MittagLeffleR
 NULL
 
-#' @rdname MittagLeffler
+#' @rdname MittagLeffleR
 #' @examples
 #' dml(1, 0.8)
 #' dml(1, 0.6, second.type=TRUE)
@@ -110,7 +111,7 @@ dml2 <- function(u,tail) {
 }
 
 
-#' @rdname MittagLeffler
+#' @rdname MittagLeffleR
 #' @examples
 #' pml(2, 0.7, 1.5)
 #' @export
@@ -146,7 +147,7 @@ pml2 <- function(q,tail) {
                            pm=1, lower.tail = FALSE)
 }
 
-#' @rdname MittagLeffler
+#' @rdname MittagLeffleR
 #' @examples
 #' qml(p = c(0.25, 0.5, 0.75), tail = 0.6, scale = 100)
 #' @export
@@ -186,7 +187,7 @@ qml2 <- function(p, tail){
                            lower.tail=FALSE)^(-tail)
 }
 
-#' @rdname MittagLeffler
+#' @rdname MittagLeffleR
 #' @examples
 #' rml(1000, 0.7, 1)
 #'

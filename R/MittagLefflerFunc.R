@@ -30,6 +30,25 @@
 # The code below is adapted from: 
 # https://au.mathworks.com/matlabcentral/fileexchange/48154-the-mittag-leffler-function
 
+#' @name MittagLeffleR
+NULL
+#' @rdname MittagLeffleR
+#' @export
+#' @param z The argument (real-valued)
+#' @param a, b, g Parameters
+#' @return The value of the Mittag-Leffler function
+#' @details
+#' The generalized (two-parameter) Mittag-Leffer function is defined by the
+#' power series
+#'     \deqn{E_{\alpha,\beta} (z) = \sum_{k=0}^\infty  z^k / \Gamma(\alpha
+#'     k + \beta) }
+#' for complex \eqn{z} and complex \eqn{\alpha, \beta} with
+#' \eqn{Real(\alpha) > 0}.
+#' @examples
+#' mlf(2,0.7)
+
+
+
 mlf <- function(z,a,b=1,g=1) {
   #check number of inputs and handle errors
   if (nargs() < 2) {
