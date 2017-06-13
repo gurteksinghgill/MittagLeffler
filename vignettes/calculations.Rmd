@@ -1,5 +1,5 @@
 ---
-title: "Calculations"
+title: "Parametrization of the sum-stable distribution"
 author: "Peter Straka"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -77,10 +77,6 @@ y <- x^(1/a) * z
 y
 ```
 
-
-
-
-## Second type Mittag-Leffler distribution
 
 
 # References

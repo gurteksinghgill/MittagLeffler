@@ -1,4 +1,4 @@
 library(testthat)
-library(MittagLeffler)
+library(MittagLeffleR)
 
-test_check("MittagLeffler")
+test_check("MittagLeffleR")

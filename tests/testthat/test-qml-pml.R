@@ -1,4 +1,4 @@
-library(MittagLeffler)
+library(MittagLeffleR)
 context("Compatibility of qml() and pml()")
 
 tailvec <- seq(0.4, 0.9, 0.1)

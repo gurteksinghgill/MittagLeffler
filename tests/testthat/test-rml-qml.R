@@ -1,4 +1,4 @@
-library(MittagLeffler)
+library(MittagLeffleR)
 context("Do simulated random variables fall into the right quantile bins?")
 
 tailvec <- seq(0.4, 0.9, 0.1)

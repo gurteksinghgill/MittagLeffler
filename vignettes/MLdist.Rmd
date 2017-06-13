@@ -9,21 +9,34 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+Set parameters:
+
 ```{r}
-library(MittagLeffler)
-tail <- 0.95
+library(MittagLeffleR)
+tail <- 0.7
 scale <- 2
-n <- 100000
+n <- 1000
 cutoff <- 2 * scale
 ```
 
-## First type
+## First type of Mittag-Leffler distribution
 
-```{r}
+Generate `r n` i.i.d. random variables, and plot their empirical CDF
+(black) against the population CDF (red). The curved dashed line represents
+the stretched exponential function, due to the asymptotic result
+
+$$f(x; \alpha, \tau) \sim \exp(-(x/\tau)^\alpha), \quad x \downarrow 0.$$
+
+The straight dashed line in the second plot represents the function 
+$x^{-\alpha}$, showing asymptotic equivalence to a power-law for 
+large values. 
+
+```{r, echo=FALSE}
 r <- rml(n = n, tail = tail, scale=scale)
 edfun <- ecdf(r)
 x <- seq(0.01,10,0.01)
-plot(x,edfun(x), xlim=c(0,10), type='l')
+plot(x,edfun(x), xlim=c(0,10), type='l', main = "CDF on linear scale", 
+     ylab="p", xlab="x")
 y <- pml(q = x, tail = tail, scale=scale)
 lines(x,y,col=2)
 z <- 1-exp(-(x/scale)^tail)
@@ -32,7 +45,8 @@ lines(x,z, lty=2)
 
 x <- exp(seq(-10,10,0.01))
 y <- 1-edfun(x)
-plot(x,y, type='l', log='xy')
+plot(x,y, type='l', log='xy', main = "Tail Function on log-scale", 
+     xlab = "x", ylab = "p")
 y <- pml(q = x, tail = tail, scale=scale, lower.tail = FALSE)
 lines(x,y, col=2)
 # power law for large values
@@ -43,8 +57,9 @@ w <- exp(-(x/scale)^tail)
 lines(x,w, lty=2)
 ```
 
+A plot of the density:
 
-```{r}
+```{r, echo=FALSE}
 cutoff <- 10
 fac <- sum(r <= cutoff) / n
 r <- r[r <= cutoff]
@@ -57,22 +72,37 @@ lines(x,y, col=2)
 
 
 
-## Second type
+## Second type of Mittag-Leffler distribution
 
-```{r}
-library(MittagLeffler)
+The second type of Mittag-Leffler distribution is light-tailed, and in fact
+has finite moments of all orders: it drops off faster than the exponential
+distribution (dashed line).
+
+```{r, echo=FALSE, warning=FALSE}
+library(MittagLeffleR)
 n <- 10^5
 tail <- 0.6
 r <- rml(n = n, tail = tail, scale=scale, second.type = TRUE)
-plot(ecdf(r), xlim=c(0,cutoff))
+edfun <- ecdf(r)
+plot(edfun, xlim=c(0,cutoff))
 x <- seq(0.01,cutoff,0.01)
 y <- pml(q = x, tail = tail, scale=scale, second.type = TRUE)
 lines(x,y, col=2)
+
+x <- exp(seq(-10,4,0.01))
+y <- 1-edfun(x)
+plot(x,y, type='l', log='xy', main = "Tail Function on log-scale", 
+     xlab = "x", ylab = "p")
+y <- pml(q = x, tail = tail, scale=scale, lower.tail = FALSE, second.type = TRUE)
+lines(x,y, col=2)
+# exponential distribution
+w <- exp(-(x/scale))
+lines(x,w, lty=2)
 ```
 
-Draw the density version with histograms, which looks nicer:
+A plot of the density:
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, echo=FALSE}
 hist(r, freq = FALSE, breaks = 20)
 x <- seq(0.01,cutoff,0.01)
 y <- dml(x = x, tail = tail, scale=scale, second.type = TRUE)

@@ -1,4 +1,4 @@
-library(MittagLeffler)
+library(MittagLeffleR)
 context("Does dml() integrate to pml()?")
 
 tailvec <- seq(0.4, 0.9, 0.1)
