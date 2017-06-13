@@ -1,0 +1,114 @@
+---
+title: "Probabilities and Quantiles"
+author: "Peter Straka"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+This vignette explains how the functions `dml()`, `pml()`, `qml()` and
+`rml()` are evaluated using the Mittag-Leffler function `mlf()` and 
+functions from the package `stabledist`. 
+Evaluation of the Mittag-Leffler function relies on the algorithm by
+@Garrappa2015. 
+
+#### Mittag-Leffler function
+
+Write $E_{\alpha, \beta}(z)$ for the two-parameter Mittag-Leffler function, 
+and $E_\alpha(z) := E_{\alpha, 1}(z)$ for the one-parameter Mittag-Leffler
+function. 
+One has 
+
+$$E_{\alpha, \beta}(z) = \sum_{k=0}^\infty \frac{z^k}{\Gamma(\beta + \alpha k)}, 
+  \quad \alpha \in \mathbb C, \Re(\alpha) > 0, z \in \mathbb C,$$
+
+see @Haubold2011a.
+
+## First type Mittag-Leffler distribution
+
+#### `pml()`
+
+The cumulative distribution function at unit scale is (see @Haubold2011a)
+
+$$F(y) = 1 - E_\alpha(-y^\alpha)$$
+
+#### `dml()`
+
+The probability density function at unit scale is (see @Haubold2011a)
+
+$$f(y) = \frac{d}{dy} F(y) = y^{\alpha - 1} E_{\alpha, \alpha}(-y^\alpha)$$
+
+
+#### `qml()`
+
+The quantile function `qml()` is calculated by numeric inversion of the cumulative
+distribution function `pml()` using `stats::uniroot()`.
+
+
+#### `rml()`
+
+Mittag-Leffler random variables $Z$ are generated as the product of 
+a stable random variable $Y$ with Laplace Transform $\exp(-s^\alpha)$
+(using the package `stabledist`)
+and $X^{1/\alpha}$ where $X$ is a unit exponentially distributed random
+variable, see @Haubold2011a.
+
+
+
+## Second type Mittag-Leffler distribution
+
+@limitCTRW introduce the inverse stable subordinator, a stochastic process
+$E(t)$. The random variable $E := E(1)$ has unit scale Mittag-Leffler distribution
+of second type, see the equation under Remark 3.1. By Corollary 3.1, $E$
+is equal in distribution to $Y^{-\alpha}$: 
+
+$$E \stackrel{d}{=} Y^{-\alpha},$$
+
+where $Y$ is a sum-stable randomvariable as above. 
+
+
+#### `pml()`
+
+Using `stabledist`, we can hence calculate the cumulative distribution function
+of $E$:
+
+$$\mathbf P[E \le q] = \mathbf P[Y^{-\alpha} \le q]
+  = \mathbf P[Y \ge q^{-1/\alpha}]$$
+
+
+#### `dml()`
+
+The probability density function is evaluated using the formula
+
+$$f(x) = \frac{1}{\alpha} x^{-1-1/\alpha} f_Y(x^{-1/\alpha})$$
+
+where $f_Y(x)$ is the probability density of the stable random variable
+$Y$. 
+
+
+#### `qml()`
+
+Let $q = (F_Y^{-1}(1-p))^{-\alpha}$, where $p \in (0,1)$ and 
+$F_Y^{-1}$ denotes the quantile function of $Y$, implemented in 
+`stabledist`. Then one confirms
+
+$$F_Y(q^{-1/\alpha}) = 1-p 
+  \Rightarrow \mathbf P[Y \ge q^{-1/\alpha}] = p
+  \Rightarrow \mathbf P[Y^{-\alpha} \le q] = p$$
+
+which means $F_E(q) = p$. 
+
+
+#### `rml()`
+
+Mittag-Leffler random variables $E$ of second type are directly simulated
+as $Y^{-\alpha}$, using `stabledist`.
+
+
+## References
