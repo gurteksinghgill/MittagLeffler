@@ -103,11 +103,8 @@ dml2 <- function(u,tail) {
   # makes the stable distribution have Laplace transform exp(-s^tail):
   gamma <- (cos(pi*tail/2))^(1/tail)
   
-  h=(1/tail)*u^(-1-1/tail)*
-  #  stable::dstable(x = u^(-1/tail), loc = 0, disp = 1, skew = 1, 
-  #                  tail = tail, eps = 1.0e-6)
-     stabledist::dstable(x = u^(-1/tail), alpha = tail, beta = 1, 
-                         gamma = gamma, delta = 0, pm = 1)
+  h <- (1/tail)*u^(-1-1/tail)*stabledist::dstable(x = u^(-1/tail), 
+        alpha = tail, beta = 1, gamma = gamma, delta = 0, pm = 1)
 }
 
 
