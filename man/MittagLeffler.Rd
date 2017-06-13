@@ -44,7 +44,7 @@ to be the number required.}
 
 \item{z}{The argument (real-valued)}
 
-\item{a, }{b, g Parameters}
+\item{a, b, g}{Parameters of the Mittag-Leffler distribution; see Garrappa}
 }
 \value{
 \code{dml} returns the density,
@@ -52,7 +52,7 @@ to be the number required.}
         \code{qml} returns the quantile function, and
         \code{rml} generates random variables.
 
-The value of the Mittag-Leffler function
+\code{mlf} returns the value of the Mittag-Leffler function.
 }
 \description{
 Probability density, cumulative distribution
@@ -66,7 +66,7 @@ power series
     \deqn{E_{\alpha,\beta} (z) = \sum_{k=0}^\infty  z^k / \Gamma(\alpha
     k + \beta) }
 for complex \eqn{z} and complex \eqn{\alpha, \beta} with
-\eqn{Real(\alpha) > 0}.
+\eqn{Real(\alpha) > 0} (only implemented for real valued parameters)
 
 The **first type** of Mittag-Leffler distribution assumes the Mittag-Leffler
 function as its tail function, so that the CDF is given by
@@ -87,13 +87,6 @@ Laplace transform of its density f:
 It is light-tailed, i.e. all its moments are finite.
 At scale \eqn{\tau}, its density is 
 \deqn{f(x; \alpha, \tau) = f(x/\tau; \alpha, 1) / \tau.}
-
-The generalized (two-parameter) Mittag-Leffer function is defined by the
-power series
-    \deqn{E_{\alpha,\beta} (z) = \sum_{k=0}^\infty  z^k / \Gamma(\alpha
-    k + \beta) }
-for complex \eqn{z} and complex \eqn{\alpha, \beta} with
-\eqn{Real(\alpha) > 0}.
 }
 \examples{
 dml(1, 0.8)

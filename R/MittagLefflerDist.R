@@ -23,7 +23,7 @@
 #'     \deqn{E_{\alpha,\beta} (z) = \sum_{k=0}^\infty  z^k / \Gamma(\alpha
 #'     k + \beta) }
 #' for complex \eqn{z} and complex \eqn{\alpha, \beta} with
-#' \eqn{Real(\alpha) > 0}.
+#' \eqn{Real(\alpha) > 0} (only implemented for real valued parameters)
 #'
 #' The **first type** of Mittag-Leffler distribution assumes the Mittag-Leffler
 #' function as its tail function, so that the CDF is given by

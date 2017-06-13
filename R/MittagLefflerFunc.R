@@ -35,15 +35,8 @@ NULL
 #' @rdname MittagLeffleR
 #' @export
 #' @param z The argument (real-valued)
-#' @param a, b, g Parameters
-#' @return The value of the Mittag-Leffler function
-#' @details
-#' The generalized (two-parameter) Mittag-Leffer function is defined by the
-#' power series
-#'     \deqn{E_{\alpha,\beta} (z) = \sum_{k=0}^\infty  z^k / \Gamma(\alpha
-#'     k + \beta) }
-#' for complex \eqn{z} and complex \eqn{\alpha, \beta} with
-#' \eqn{Real(\alpha) > 0}.
+#' @param a,b,g Parameters of the Mittag-Leffler distribution; see Garrappa
+#' @return \code{mlf} returns the value of the Mittag-Leffler function.
 #' @examples
 #' mlf(2,0.7)
 
