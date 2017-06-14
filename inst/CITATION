@@ -1,0 +1,13 @@
+citHeader("To cite MittagLeffleR in publications, please use:")
+
+citEntry(entry = "manual",
+  author = c(person("Gurtek", "Gill", email = "rickygill01@gmail.com", 
+            role = "aut"),
+    person("Peter", "Straka", email = "p.straka@unsw.edu.au", 
+            role = c("aut", "cre"))),
+  title = "MittagLeffleR: Using the Mittag-Leffler distributions in R",
+  year = "2017",
+  url = "https://github.com/rickygill01/MittagLeffler/",
+  textVersion = "G. Gill and P. Straka (2017). MittagLeffleR: Using the 
+                  Mittag-Leffler distributions in R."
+)

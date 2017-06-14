@@ -2,6 +2,8 @@ Package: MittagLeffleR
 Type: Package
 Title: The Mittag-Leffler Distribution
 Version: 0.1.0
+Author: Gurtek Gill [aut], Peter Straka [aut, cre]
+Maintainer: Peter Straka <p.straka@unsw.edu.au>
 Authors@R: c(
     person("Gurtek", "Gill", email = "rickygill01@gmail.com", 
             role = "aut"),
@@ -19,5 +21,6 @@ RoxygenNote: 6.0.1
 Imports: stats, stabledist
 Suggests: knitr,
     rmarkdown,
-    testthat
+    testthat,
+    animation
 VignetteBuilder: knitr
