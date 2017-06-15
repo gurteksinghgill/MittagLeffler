@@ -2,14 +2,17 @@ Package: MittagLeffleR
 Type: Package
 Title: The Mittag-Leffler Distribution
 Version: 0.1.0
+Author: Gurtek Gill [aut], Peter Straka [aut, cre]
+Maintainer: Peter Straka <p.straka@unsw.edu.au>
 Authors@R: c(
     person("Gurtek", "Gill", email = "rickygill01@gmail.com", 
             role = "aut"),
     person("Peter", "Straka", email = "p.straka@unsw.edu.au", 
             role = c("aut", "cre")))
-Description: These functions provide probability density, distribution function, 
+Description: Provides probability density, distribution function, 
   quantile function and random variate generation for the Mittag-Leffler 
-  distributions, and the Mittag-Leffler function.
+  distributions, and the Mittag-Leffler function. Based on the algorithm
+  by Garrappa, R. (2015) <doi:10.1137/140971191>.
 URL: https://github.com/rickygill01/MittagLeffler/
 BugReports: https://github.com/rickygill01/MittagLeffler/issues
 License: GPL (>= 2)
@@ -19,5 +22,6 @@ RoxygenNote: 6.0.1
 Imports: stats, stabledist
 Suggests: knitr,
     rmarkdown,
-    testthat
+    testthat,
+    animation
 VignetteBuilder: knitr
