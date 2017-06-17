@@ -44,30 +44,38 @@ mlml <- function(X) {
 }
 mlml(y)
 #> $tail
-#> [1] 0.8924838
+#> [1] 0.8716385
 #> 
 #> $scale
-#> [1] 2.370469
+#> [1] 1.416363
 ```
 
 ### Calculate the probability density of an anomalous diffusion process
 
-Brownian motion at time *t* has a normal probability density *n*(*x*, *t*<sup>1/2</sup>). A fractional diffusion at time *t* has the time-changed probability density
+Standard Brownian motion with drift 1 has, at time *t*, has a normal probability density *n*(*x*|*μ* = *t*, *σ*<sup>2</sup> = *t*). A fractional diffusion at time *t* has the time-changed probability density
 
-*p*(*x*, *t*)=∫*n*(*x*, *u*)*h*(*u*, *t*)*d**u*
+*p*(*x*, *t*)=∫*n*(*x*|*μ* = *u*, *σ*<sup>2</sup> = *u*)*h*(*u*, *t*)*d**u*
 
-where *h*(*u*, *t*) is a second type Mittag-Leffler probability density with scale *t*<sup>*α*</sup>:
+where *h*(*u*, *t*) is a second type Mittag-Leffler probability density with scale *t*<sup>*α*</sup>. (We assume *t* = 1.)
 
 ``` r
 tail <- 0.65
 dx <- 0.01
-x <- seq(-3,3,dx)
+x <- seq(-2,5,dx)
 umax <- qml(p = 0.99, tail = tail, scale = 1, second.type = TRUE)
 u <- seq(0.01,umax,dx)
 h <- dml(x = u, tail = tail, scale = 1, second.type = TRUE)
-N <- outer(x,u,function(x,u){dnorm(x = x, sd = sqrt(u))})
+N <- outer(x,u,function(x,u){dnorm(x = x, mean = u, sd = sqrt(u))})
 p <- N %*% h * dx
-plot(x,p, type='l', main = "Density of fractional diffusion at t=1")
+plot(x,p, type='l', main = "Fractional diffusion with drift at t=1")
 ```
 
-![](README-unnamed-chunk-3-1.png)
+![](README-CTRW-limit-1.png)
+
+### Vignettes
+
+Vignettes are written in R Markdown.
+
+-   **MLdist.Rmd:** shows plots with the basic properties of the two distributions.
+-   **probsNquantiles.Rmd:** explains how probability densities, quantiles and random variables are calculated using the Mittag-Leffler function and the package `stabledist`
+-   **parametrisation.Rmd:** explains how the parameters for the stable distribution were chosen.

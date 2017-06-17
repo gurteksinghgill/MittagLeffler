@@ -34,8 +34,8 @@ mlf(z, a, b = 1, g = 1)
 \item{second.type}{logical; if FALSE (default), 
 first type of Mittag-Leffler distribution is assumed.}
 
-\item{lower.tail}{logical; if TRUE, probabilities are P[X ≤ x]
-otherwise, P[X > x]}
+\item{lower.tail}{logical; if TRUE, probabilities are \eqn{P[X \le x]}
+otherwise, \eqn{P[X > x]}}
 
 \item{p}{vector of probabilities.}
 
@@ -77,7 +77,7 @@ Its PDF is given by
 \deqn{f(x; \alpha, \tau) = x^{\alpha - 1} 
 E_{\alpha,\alpha} [-(x/\tau)^\alpha] / \tau^\alpha.}
 As \eqn{\alpha} approaches 1 from below, the Mittag-Leffler converges
-(weakly) to the expnoential
+(weakly) to the exponential
 distribution. For \eqn{0 < \alpha < 1}, it is (very) heavy-tailed, i.e.
 has infinite mean.
 

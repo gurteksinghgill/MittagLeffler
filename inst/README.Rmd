@@ -65,23 +65,38 @@ mlml(y)
 
 ### Calculate the probability density of an anomalous diffusion process
 
-Brownian motion at time $t$ has a normal probability density $n(x,t^{1/2})$.
+Standard Brownian motion with drift $1$ has, at time $t$, 
+has a normal probability density 
+$n(x|\mu = t, \sigma^2 = t)$.
 A fractional diffusion at time $t$ has the time-changed probability density 
 
-$$p(x,t) = \int n(x,u)h(u,t)du$$
+$$p(x,t) = \int n(x| \mu = u, \sigma^2 = u)h(u,t) du$$
 
 where $h(u,t)$ is a second type Mittag-Leffler probability density with 
-scale $t^\alpha$:
+scale $t^\alpha$. (We assume $t=1$.)
 
-```{r, warning=FALSE}
+```{r CTRW-limit, warning=FALSE}
 tail <- 0.65
 dx <- 0.01
-x <- seq(-3,3,dx)
+x <- seq(-2,5,dx)
 umax <- qml(p = 0.99, tail = tail, scale = 1, second.type = TRUE)
 u <- seq(0.01,umax,dx)
 h <- dml(x = u, tail = tail, scale = 1, second.type = TRUE)
-N <- outer(x,u,function(x,u){dnorm(x = x, sd = sqrt(u))})
+N <- outer(x,u,function(x,u){dnorm(x = x, mean = u, sd = sqrt(u))})
 p <- N %*% h * dx
-plot(x,p, type='l', main = "Density of fractional diffusion at t=1")
+plot(x,p, type='l', main = "Fractional diffusion with drift at t=1")
 ```
+
+
+### Vignettes
+
+Vignettes are written in R Markdown. 
+
+- **MLdist.Rmd:** shows plots with the basic properties of the two
+              distributions.
+- **probsNquantiles.Rmd:** explains how probability densities, quantiles
+              and random variables are calculated using the Mittag-Leffler
+              function and the package `stabledist`
+- **parametrisation.Rmd:** explains how the parameters for the stable
+              distribution were chosen. 
 
